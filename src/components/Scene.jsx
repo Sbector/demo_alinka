@@ -1,8 +1,10 @@
 import { useRef, useEffect } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { MapControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import Stats from "three/examples/jsm/libs/stats.module"
+import * as dat from 'dat.gui'
 
 const Scene = () => {
   const mountRef = useRef(null)
@@ -10,6 +12,14 @@ const Scene = () => {
   useEffect(() => {
     const currentRef = mountRef.current
     const { clientWidth: width, clientHeight: height } = currentRef
+
+    // Debug
+    const gui = new dat.GUI()
+
+    /**
+    * global
+    */
+    const zoom = 2
 
     /**
      *  Escena
@@ -20,8 +30,10 @@ const Scene = () => {
     /**
      * Cámara
      */
-    const camera = new THREE.PerspectiveCamera(25, width / height, 0.01, 1000)
-    camera.position.set(10,10,10)
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.001, 100)
+    camera.position.x = 0
+    camera.position.y = 0.18
+    camera.position.z = 2
     scene.add(camera)
 
     /**
@@ -35,19 +47,41 @@ const Scene = () => {
     /**
      * Controles
      */
-    const controls = new OrbitControls(camera, renderer.domElement)
+    const controls = new MapControls(camera, renderer.domElement)
     controls.enableDamping = true
-    controls.enablePan = false
-    controls.minDistance = 15
-    controls.maxDistance = 25
+    controls.dampingFactor = 0.05
+     
+    controls.screenSpacePanning = false
+     
+    controls.minDistance = zoom
+    controls.maxDistance = zoom
+     
+    controls.maxPolarAngle = Math.PI * 0.489
+    controls.minPolarAngle = Math.PI * 0.35
+    controls.minAzimuthAngle = -Math.PI * 0.0001;
+    controls.maxAzimuthAngle = Math.PI * 0.0001;
 
     /**
-     * Geometría
+     * Objects
      */
-    const geometry = new THREE.BoxGeometry(1, 2, 1)
-    const material = new THREE.MeshPhongMaterial({ color: 0xaa88ff })
-    const cube = new THREE.Mesh(geometry, material)
-    scene.add(cube)
+    // Material
+
+    // Objects
+    const color = ['blue','red', 'orange', 'yellow', 'green', 'aqua', 'magenta']
+    let x = 0
+    let z = 0
+    const picGeometry = new THREE.PlaneGeometry(.1,.2)
+
+    for(let i = 0; i <= Math.PI * 2; i += (Math.PI*2)/125){
+        x = Math.cos(i) * (Math.random() * 2.3 + 0.2)
+        z = (Math.sin(i) * (Math.random() * 10 + 0.5))-10
+        const color_ = color[Math.floor(Math.random()*color.length)]
+        const picMaterial = new THREE.MeshStandardMaterial()
+        picMaterial.color = new THREE.Color(color_)
+        const pic = new THREE.Mesh(picGeometry,picMaterial)
+        pic.position.set(x,0,z)
+        scene.add(pic)
+    }
 
     /**
      * Luces
@@ -62,8 +96,6 @@ const Scene = () => {
     /**
      * Ajustes Generales
      */
-    // Dirección de la cámara
-    camera.lookAt(cube.position)
 
     // Reloj para animación
     const clock = new THREE.Clock()
@@ -77,12 +109,8 @@ const Scene = () => {
      */
     const animate = () => {
       stats.update()
-      const elapsedTime = clock.getElapsedTime()/5
-      cube.rotation.y = elapsedTime
-      cube.rotation.x = elapsedTime
-      cube.position.y = Math.sin(elapsedTime)*2
-      cube.position.x = Math.cos(elapsedTime)*1
-      //console.log(elapsedTime)
+    //   const elapsedTime = clock.getElapsedTime()/5
+    //   console.log(elapsedTime)
       controls.update()
       renderer.render(scene, camera)
       requestAnimationFrame(animate)
@@ -91,6 +119,7 @@ const Scene = () => {
     /**
      * Función Resize
      */
+    
     const resize = () =>{
         const updatedWidth = currentRef.clientWidth
         const updatedHeight = currentRef.clientHeight
