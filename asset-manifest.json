@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/demo_alinka/static/css/main.a240c550.css",
+    "main.js": "/demo_alinka/static/js/main.a6643caa.js",
+    "index.html": "/demo_alinka/index.html",
+    "main.a240c550.css.map": "/demo_alinka/static/css/main.a240c550.css.map",
+    "main.a6643caa.js.map": "/demo_alinka/static/js/main.a6643caa.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a240c550.css",
+    "static/js/main.a6643caa.js"
+  ]
+}
