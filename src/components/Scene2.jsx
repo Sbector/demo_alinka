@@ -7,7 +7,7 @@ import Stats from "three/examples/jsm/libs/stats.module"
 import * as dat from 'dat.gui'
 
 
-const Scene = () => {
+const Scene2 = () => {
   const mountRef = useRef(null)
 
   useEffect(() => {
@@ -295,4 +295,4 @@ const Scene = () => {
   return <div ref={mountRef} style={{ width: "100%", height: "100vh" }}></div>
 }
 
-export default Scene
+export default Scene2
